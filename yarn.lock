@@ -179,6 +179,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@adonisjs/cors@npm:2.1.0":
+  version: 2.1.0
+  resolution: "@adonisjs/cors@npm:2.1.0"
+  peerDependencies:
+    "@adonisjs/core": ^6.1.5-32
+  checksum: 256322eb88eefd831b5f95ffd026209ea8ff22a54184656f8398626a8965a2d72ed7cda520b573884a8dc3ad9860c14094e117a6221d28d6725d74cdd82aaa3f
+  languageName: node
+  linkType: hard
+
 "@adonisjs/encryption@npm:^6.0.0":
   version: 6.0.0
   resolution: "@adonisjs/encryption@npm:6.0.0"
@@ -301,6 +310,17 @@ __metadata:
     "@adonisjs/fold": ^10.0.0
     "@adonisjs/logger": ^6.0.0
   checksum: 0e27c6c0cb9cef1c86e9779bee4fd83c5f23b66961c83e2fe68407b9e644a522a05cf466d3e116168daa41b956b16cd7d98f23b06ea383fc28ee3ec72c7b58a9
+  languageName: node
+  linkType: hard
+
+"@adonisjs/logger@npm:^5.4.2-8":
+  version: 5.4.2-8
+  resolution: "@adonisjs/logger@npm:5.4.2-8"
+  dependencies:
+    "@poppinss/utils": "npm:^6.7.0"
+    abstract-logging: "npm:^2.0.1"
+    pino: "npm:^8.17.1"
+  checksum: 7e750606e337e63190fbc59f9be195e8e014b7f2d604a160555a3e7a240e7f589fc36f127049ecd6f932c1617c6a6a9fc1ea80c55f752d17b294ad8b302090c7
   languageName: node
   linkType: hard
 
@@ -7825,7 +7845,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"pino@npm:^8.17.2":
+"pino@npm:^8.17.1, pino@npm:^8.17.2":
   version: 8.17.2
   resolution: "pino@npm:8.17.2"
   dependencies:
@@ -8734,7 +8754,9 @@ __metadata:
     "@adonisjs/assembler": "npm:^7.0.0-1"
     "@adonisjs/auth": "npm:^9.0.0-10"
     "@adonisjs/core": "npm:6.2.0"
+    "@adonisjs/cors": "npm:2.1.0"
     "@adonisjs/eslint-config": "npm:^1.2.0"
+    "@adonisjs/logger": "npm:^5.4.2-8"
     "@adonisjs/lucid": "npm:19.0.0-8"
     "@adonisjs/prettier-config": "npm:^1.2.0"
     "@adonisjs/tsconfig": "npm:^1.2.0"
