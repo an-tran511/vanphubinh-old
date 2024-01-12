@@ -8760,6 +8760,7 @@ __metadata:
     "@adonisjs/lucid": "npm:19.0.0-8"
     "@adonisjs/prettier-config": "npm:^1.2.0"
     "@adonisjs/tsconfig": "npm:^1.2.0"
+    "@faker-js/faker": "npm:^8.3.1"
     "@japa/assert": "npm:^2.1.0"
     "@japa/plugin-adonisjs": "npm:^2.0.2"
     "@japa/runner": "npm:^3.1.1"

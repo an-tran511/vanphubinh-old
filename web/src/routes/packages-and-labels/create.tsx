@@ -121,7 +121,6 @@ export function CreateComponent() {
   const doSubmit = () => {
     formRef?.current?.submit();
   };
-
   return (
     <Create title="Thêm sản phẩm bao bì" submitHandler={doSubmit}>
       <Form onSubmit={(values: NewPackageAndLabel) => mutation.mutate(values)} ref={formRef}>
