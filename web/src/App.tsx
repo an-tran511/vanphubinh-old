@@ -1,35 +1,63 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import '@mantine/core/styles.layer.css';
+import 'mantine-datatable/styles.layer.css';
+import { Loader, MantineProvider, Center } from '@mantine/core';
+import { theme } from './theme';
+import { QueryClientProvider, QueryClient, QueryCache, MutationCache } from '@tanstack/react-query';
+import { Router, RouterProvider } from '@tanstack/react-router';
+import { routeTree } from './routeTree.gen';
+import { Toaster, toast } from 'sonner';
+import { Error } from './components/error';
 
-function App() {
-  const [count, setCount] = useState(0)
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      refetchOnWindowFocus: false, // default: true
+    },
+  },
+  queryCache: new QueryCache({
+    onError: (error, query) => {
+      // 🎉 only show error toasts if we already have data in the cache
+      // which indicates a failed background update
+      if (query.state.data !== undefined) {
+        toast.error(`Something went wrong: ${error.message}`);
+      }
+      toast.error(`Something went wrong: ${error.message}`);
+    },
+  }),
+  mutationCache: new MutationCache({
+    onError: (error) => {
+      // 🎉 only show error toasts if we already have data in the cache
+      // which indicates a failed background update
 
+      toast.error(`Something went wrong: ${error.message}`);
+    },
+  }),
+});
+
+const router = new Router({
+  routeTree,
+  defaultPendingComponent: () => (
+    <Center h="100vh">
+      <Loader />
+    </Center>
+  ),
+  defaultErrorComponent: () => <Error />,
+  context: {
+    queryClient,
+  },
+  defaultPreload: 'intent',
+  // Since we're using React Query, we don't want loader calls to ever be stale
+  // This will ensure that the loader is always called when the route is preloaded or visited
+  defaultPreloadStaleTime: 0,
+});
+
+export default function App() {
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+    <MantineProvider theme={theme}>
+      <QueryClientProvider client={queryClient}>
+        <Toaster richColors />
+        <RouterProvider router={router} />
+      </QueryClientProvider>
+    </MantineProvider>
+  );
 }
-
-export default App

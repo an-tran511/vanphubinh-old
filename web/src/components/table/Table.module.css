@@ -1,0 +1,14 @@
+.table {
+  th,
+  td {
+    vertical-align: middle;
+  }
+}
+.header {
+  text-transform: uppercase;
+  font-size: 12px;
+  background-color: #f9f9f9;
+}
+.root {
+  border-left: none;
+}
