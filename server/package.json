@@ -29,7 +29,8 @@
     "#database/*": "./database/*.js",
     "#start/*": "./start/*.js",
     "#tests/*": "./tests/*.js",
-    "#config/*": "./config/*.js"
+    "#config/*": "./config/*.js",
+    "#strategies/*": "./app/strategies/*.js"
   },
   "devDependencies": {
     "@adonisjs/assembler": "^7.0.0-1",
@@ -52,6 +53,7 @@
     "@adonisjs/auth": "^9.0.0-10",
     "@adonisjs/core": "6.2.0",
     "@adonisjs/lucid": "19.0.0-8",
+    "@poppinss/utils": "^6.7.0",
     "luxon": "^3.4.4",
     "pg": "^8.11.3",
     "reflect-metadata": "^0.2.1"
