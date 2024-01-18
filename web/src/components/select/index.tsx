@@ -94,7 +94,7 @@ export const CreatableSelect = factory<SelectFactory>((_props, ref) => {
   const [search, setSearch] = useUncontrolled({
     value: searchValue,
     defaultValue: defaultSearchValue,
-    finalValue: selectedOption ? selectedOption.label : '',
+    finalValue: '',
     onChange: onSearchChange,
   });
 

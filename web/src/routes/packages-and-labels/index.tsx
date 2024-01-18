@@ -123,7 +123,7 @@ function ListComponent() {
 
   return (
     <List title="Bao bì & nhãn mác" pagination={pagination}>
-      <Box p="md" bg="white">
+      <Box py="md" px="xl" bg="white">
         <Group>
           <TextInput
             variant="default"

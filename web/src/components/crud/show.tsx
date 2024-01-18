@@ -8,20 +8,16 @@ import {
   em,
   ActionIcon,
   Card,
-  Flex,
-  Tabs,
-  Avatar,
-  Textarea,
-  Container,
   Divider,
   Popover,
   ScrollArea,
+  Drawer,
+  Badge,
 } from '@mantine/core';
-import { useMediaQuery } from '@mantine/hooks';
-import { CaretDown, Plus } from '@phosphor-icons/react';
-import { ReactNode } from 'react';
+import { useDisclosure, useMediaQuery } from '@mantine/hooks';
+import { CaretDown, Note, Plus } from '@phosphor-icons/react';
+import { ReactNode, useState } from 'react';
 import classes from './Crud.module.css';
-import tabClasses from '../tab/Tab.module.css';
 
 interface CreateProps {
   children: ReactNode;
@@ -31,12 +27,15 @@ interface CreateProps {
 
 export const Show = (props: CreateProps) => {
   const { children, title, submitHandler } = props;
-  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+  const isTablet = useMediaQuery(`(max-width: ${em(801)})`);
+  const [opened, { open, close }] = useDisclosure(false);
+  const [formUpdateState, setFormUpdateState] = useState(false);
 
   return (
     <Stack h={{ base: 'calc(100vh - 60px)', md: '100vh' }} gap="0">
       <Box
-        p="md"
+        px="xl"
+        py="md"
         style={{
           borderBottom: '1px solid var(--mantine-color-gray-3)',
           position: 'sticky',
@@ -45,23 +44,37 @@ export const Show = (props: CreateProps) => {
       >
         <Group justify="space-between">
           <Group>
-            <Title order={isMobile ? 4 : 2}>{title}</Title>
+            <Title order={isTablet ? 4 : 2}>{title}</Title>
           </Group>
 
           <Group justify="flex-end" gap="xs">
-            {isMobile ? (
-              <ActionIcon size="md" aria-label="Settings">
-                <Plus size={14} weight="bold" />
-              </ActionIcon>
+            {isTablet ? (
+              <Group gap="xs">
+                <ActionIcon size="md" aria-label="Save" onClick={submitHandler}>
+                  <Plus size={14} weight="bold" />
+                </ActionIcon>
+                <ActionIcon
+                  size="md"
+                  aria-label="Notes"
+                  color="gray"
+                  variant="light"
+                  onClick={open}
+                >
+                  <Note size={14} weight="bold" />
+                </ActionIcon>
+              </Group>
             ) : (
-              <Button
-                size={isMobile ? 'xs' : 'sm'}
-                variant="filled"
-                radius="md"
-                justify="space-between"
-              >
-                Thêm mới
-              </Button>
+              <Group>
+                <Button
+                  size={isTablet ? 'xs' : 'sm'}
+                  variant="filled"
+                  radius="md"
+                  justify="space-between"
+                  onClick={submitHandler}
+                >
+                  Thêm mới
+                </Button>
+              </Group>
             )}
           </Group>
         </Group>
@@ -71,9 +84,9 @@ export const Show = (props: CreateProps) => {
           <ScrollArea h="100%">{children}</ScrollArea>
         </Box>
         <Box className={classes.aside} visibleFrom="md">
-          <Card px="md" bg="gray.0">
+          <Card px="xl" bg="gray.0">
             <Group>
-              <Popover width="target" position="bottom" withArrow shadow="md">
+              <Popover width="target" position="bottom" withArrow shadow="md" offset={-5}>
                 <Popover.Target>
                   <Button
                     color="gray.0"
@@ -103,6 +116,52 @@ export const Show = (props: CreateProps) => {
             <Divider my="sm" />
           </Card>
         </Box>
+        <Drawer
+          opened={opened}
+          onClose={close}
+          title={
+            <Popover width="target" position="bottom" withArrow shadow="md">
+              <Popover.Target>
+                <Button
+                  color="gray.0"
+                  autoContrast
+                  justify="space-between"
+                  rightSection={<CaretDown size={14} />}
+                  size="compact-md"
+                >
+                  <Text fw={500}>Bình luận</Text>
+                </Button>
+              </Popover.Target>
+              <Popover.Dropdown p="xs">
+                <Stack gap="xs">
+                  <Button variant="subtle" autoContrast size="compact-md">
+                    <Text fw={500}>Tất cả</Text>
+                  </Button>
+                  <Button variant="subtle" autoContrast size="compact-md">
+                    <Text fw={500}>Bình luận</Text>
+                  </Button>
+                  <Button variant="subtle" autoContrast size="compact-md">
+                    <Text fw={500}>Lịch sử</Text>
+                  </Button>
+                </Stack>
+              </Popover.Dropdown>
+            </Popover>
+          }
+          position="bottom"
+          styles={{
+            header: {
+              backgroundColor: 'var(--mantine-color-gray-0)',
+              borderBottom: '1px solid var(--mantine-color-gray-3)',
+              padding: '0',
+              marginLeft: '16px',
+              marginRight: '16px',
+            },
+            content: {
+              backgroundColor: 'var(--mantine-color-gray-0)',
+            },
+          }}
+          size="85%"
+        ></Drawer>
       </Box>
     </Stack>
   );

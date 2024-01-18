@@ -11,11 +11,11 @@ export const Route = rootRouteWithContext<{
 
 function RootComponent() {
   const [opened, { toggle }] = useDisclosure();
-  const isMobile = useMediaQuery(`(max-width: ${em(1024)})`);
+  const isTablet = useMediaQuery(`(max-width: ${em(801)})`);
   return (
     <AppShell
       layout="alt"
-      header={{ height: 60, collapsed: !isMobile }}
+      header={{ height: 60, collapsed: !isTablet }}
       navbar={{ width: 250, breakpoint: 'md', collapsed: { mobile: !opened } }}
       padding="0"
       transitionDuration={500}

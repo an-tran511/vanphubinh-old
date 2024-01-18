@@ -38,7 +38,7 @@ export const List = (props: ListProps) => {
   const { page, onPageChange, lastPage, isLoading, total } = pagination ?? {};
   const navigate = useNavigate();
   const defaultHandleClick = () => navigate({ to: `create` });
-  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
+  const isTablet = useMediaQuery(`(max-width: ${em(801)})`);
 
   const createHandler =
     typeof onCreateHandler === 'function' ? onCreateHandler : defaultHandleClick;
@@ -56,14 +56,15 @@ export const List = (props: ListProps) => {
   return (
     <Stack h={{ base: 'calc(100vh - 60px)', md: '100vh' }} gap="0">
       <Box
-        p="md"
+        py="md"
+        px="xl"
         style={{
           borderBottom: '1px solid var(--mantine-color-gray-3)',
         }}
       >
         <Group justify="space-between">
           <Group>
-            <Title order={isMobile ? 4 : 2}>{title}</Title>
+            <Title order={isTablet ? 4 : 2}>{title}</Title>
           </Group>
           {/* <TextInput
             visibleFrom="md"
@@ -76,13 +77,13 @@ export const List = (props: ListProps) => {
             // onChange={(event) => setSearchValueDraft(event.currentTarget.value)}
           /> */}
           <Group justify="flex-end" gap="xs">
-            {isMobile ? (
+            {isTablet ? (
               <ActionIcon size="md" aria-label="Settings" onClick={createHandler}>
                 <Plus size={14} weight="bold" />
               </ActionIcon>
             ) : (
               <Button
-                size={isMobile ? 'xs' : 'sm'}
+                size={isTablet ? 'xs' : 'sm'}
                 variant="filled"
                 justify="space-between"
                 onClick={createHandler}

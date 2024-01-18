@@ -1,46 +1,45 @@
-import { uomsQueryOptions } from '@apis/query-options';
+import {
+  categoriesQueryOptions,
+  partnersQueryOptions,
+  uomsQueryOptions,
+} from '@apis/query-options';
 import { Uom } from '@app-types/uom';
 import { CreatableSelect } from '@components/select';
-import { createPackageAndLabel } from '@apis/package-and-label';
-import { NewPackageAndLabel, PackageAndLabel } from '@app-types/package-and-label';
+import { TPackageAndLabelMutation, TPackageAndLabel } from '@app-types/package-and-label';
 import {
-  Divider,
-  Grid,
   Group,
-  NumberInput,
   SimpleGrid,
   Stack,
   TextInput,
   Text,
-  Box,
   Textarea,
   ComboboxChevron,
-  ComboboxItem,
-  OptionsFilter,
   Card,
   Tabs,
   Accordion,
   Image,
+  Box,
 } from '@mantine/core';
-import { useDebouncedValue } from '@mantine/hooks';
-import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
-import { Field, Form } from 'houseform';
-import { useMemo, useState } from 'react';
-import { toast } from 'sonner';
+import { useDebouncedValue, useFocusTrap } from '@mantine/hooks';
+import { Field, Form, FormInstance } from 'houseform';
+import { ForwardedRef, forwardRef, useMemo, useState } from 'react';
 import { z } from 'zod';
-import classes from '@components/tab/Tab.module.css';
 import accClasses from '@components/accordion/Accordion.module.css';
-import {
-  Cylinder,
-  Info,
-  NumberCircleThree,
-  NumberCircleTwo,
-  NumberOne,
-} from '@phosphor-icons/react';
+import { Cylinder, Info } from '@phosphor-icons/react';
 import { Dropzone, IMAGE_MIME_TYPE } from '@mantine/dropzone';
+import { Partner } from '@app-types/partner';
+import { UseMutationResult, useSuspenseQuery } from '@tanstack/react-query';
+import classes from '@components/inline-edit-input/InlineEditInput.module.css';
 
-export const PackageAndLabelForm = () => {
-  const queryClient = useQueryClient();
+interface PackageAndLabelFormProps {
+  mutation: UseMutationResult<TPackageAndLabel, Error, TPackageAndLabelMutation, unknown>;
+  data?: TPackageAndLabel;
+}
+export const PackageAndLabelForm = forwardRef(function RefForm(
+  props: PackageAndLabelFormProps,
+  ref: ForwardedRef<FormInstance<TPackageAndLabelMutation>> | undefined
+) {
+  const { mutation, data } = props;
 
   const [searchPartnerDraft, setSearchPartnerDraft] = useState('');
   const [debouncedSearchPartnerDraft] = useDebouncedValue(searchPartnerDraft, 300);
@@ -50,7 +49,6 @@ export const PackageAndLabelForm = () => {
 
   const [searchCatDraft, setSearchCatDraft] = useState('');
   const [debouncedSearchCatDraft] = useDebouncedValue(searchCatDraft, 300);
-
   //Uoms query
   const uomsQuery = useSuspenseQuery(
     uomsQueryOptions({
@@ -72,38 +70,84 @@ export const PackageAndLabelForm = () => {
   };
   const uomSelectLoading = uomsQuery.isFetching;
 
-  const mutation = useMutation({
-    mutationFn: (values: NewPackageAndLabel) => createPackageAndLabel(values),
-    onSuccess: (data: PackageAndLabel) => {
-      queryClient.invalidateQueries({ queryKey: ['packages-and-labels'] });
-      toast.success(`${data.name} đã được tạo thành công`);
-    },
-  });
+  //Cats query
+  const catsQuery = useSuspenseQuery(
+    categoriesQueryOptions({
+      deps: { page: 1, searchValue: debouncedSearchCatDraft },
+      noMeta: true,
+    })
+  );
+  const cats = catsQuery.data as Uom[];
+  const catOptions = useMemo(() => {
+    return cats
+      ? cats.map((item: Uom) => ({
+          label: String(item.name),
+          value: String(item.id),
+        }))
+      : [];
+  }, [cats]);
+  const onSearchCat = (value: string) => {
+    setSearchCatDraft(value);
+  };
+  const catSelectLoading = catsQuery.isFetching;
+
+  //Partners query
+  const partnersQuery = useSuspenseQuery(
+    partnersQueryOptions({
+      deps: { page: 1, searchValue: debouncedSearchPartnerDraft },
+      noMeta: true,
+    })
+  );
+  const partners = partnersQuery.data as Partner[];
+  const partnerOptions = useMemo(() => {
+    return partners
+      ? partners.map((item: Partner) => ({
+          label: String(item.name),
+          value: String(item.id),
+        }))
+      : [];
+  }, [partners]);
+  const onSearchPartner = (value: string) => {
+    setSearchPartnerDraft(value);
+  };
+  const partnerSelectLoading = partnersQuery.isFetching;
+  const focusTrapRef = useFocusTrap();
+
+  // const mutation = useMutation({
+  //   mutationFn: (values: TPackageAndLabelMutation) => createTPackageAndLabel(values),
+  //   onSuccess: (data: TPackageAndLabel) => {
+  //     queryClient.invalidateQueries({ queryKey: ['packages-and-labels'] });
+  //     toast.success(`${data.name} đã được tạo thành công`);
+  //   },
+  // });
+  const [editable, setEditable] = useState(false);
 
   return (
-    <Form onSubmit={(values: NewPackageAndLabel) => mutation.mutate(values)}>
+    <Form onSubmit={(values: TPackageAndLabelMutation) => mutation.mutate(values)} ref={ref}>
       {() => (
-        <Card shadow="0" radius="0">
-          <Field name="name" initialValue={''}>
-            {({ value, setValue, onBlur }) => (
-              <Textarea
-                styles={{
-                  input: {
-                    fontSize: '150%',
-                  },
-                }}
-                autosize
-                label="Tên hàng hoá"
-                minRows={1}
-                variant="unstyled"
-                value={value}
-                onChange={(e) => setValue(e.target.value)}
-                onBlur={onBlur}
-                required
-                aria-required
-              />
-            )}
-          </Field>
+        <Card shadow="0" radius="0" px="xl">
+          <Group justify="space-between" align="flex-start">
+            <Field
+              name="name"
+              initialValue={data ? data.name : ''}
+              onChangeValidate={z.string().min(1, { message: 'Trường bắt buộc' })}
+            >
+              {({ value, setValue, onBlur, errors }) => (
+                <Textarea
+                  autosize
+                  ref={focusTrapRef}
+                  minRows={1}
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
+                  onBlur={onBlur}
+                  required
+                  aria-required
+                  error={errors?.[0]}
+                  radius="md"
+                />
+              )}
+            </Field>
+          </Group>
           <Tabs defaultValue="info">
             <Tabs.List>
               <Tabs.Tab value="info" leftSection={<Info size={16} />}>
@@ -123,7 +167,7 @@ export const PackageAndLabelForm = () => {
               >
                 <Accordion.Item value="item-1">
                   <Accordion.Control>
-                    <Text fw="500" size="sm">
+                    <Text fw="500" size="sm" c="">
                       Thông tin cơ bản
                     </Text>
                   </Accordion.Control>
@@ -132,10 +176,13 @@ export const PackageAndLabelForm = () => {
                       <SimpleGrid cols={{ base: 1, md: 3 }} verticalSpacing="md">
                         <Field
                           name="uomId"
-                          initialValue={''}
-                          onChangeValidate={z.string().transform((val) => Number(val))}
+                          initialValue={data ? String(data.uomId) : ''}
+                          onChangeValidate={z
+                            .string()
+                            .min(1, { message: 'Trường bắt buộc' })
+                            .transform((val) => Number(val))}
                         >
-                          {({ value, setValue, onBlur }) => (
+                          {({ value, setValue, onBlur, errors }) => (
                             <CreatableSelect
                               radius="md"
                               size="sm"
@@ -153,6 +200,7 @@ export const PackageAndLabelForm = () => {
                               isLoadingOptions={uomSelectLoading}
                               rightSection={<ComboboxChevron />}
                               rightSectionPointerEvents="none"
+                              error={errors?.[0]}
                             />
                           )}
                         </Field>
@@ -160,6 +208,7 @@ export const PackageAndLabelForm = () => {
                           {({ value, setValue, onBlur }) => (
                             <CreatableSelect
                               size="sm"
+                              radius="md"
                               value={value}
                               label="Đơn vị thứ hai"
                               data={uomOptions}
@@ -180,6 +229,7 @@ export const PackageAndLabelForm = () => {
                           {({ value, setValue, onBlur }) => (
                             <CreatableSelect
                               size="sm"
+                              radius="md"
                               value={value}
                               label="Đơn vị mua hàng"
                               data={uomOptions}
@@ -198,16 +248,77 @@ export const PackageAndLabelForm = () => {
                         </Field>
                       </SimpleGrid>
                       <SimpleGrid cols={{ base: 1, md: 3 }} verticalSpacing="md">
-                        <TextInput label="Mã hàng hoá" radius="md" />
-                        <TextInput label="Mã hàng hoá" radius="md" />
-                        <TextInput label="Mã hàng hoá" radius="md" />
+                        <Field
+                          name="partnerId"
+                          initialValue={''}
+                          onChangeValidate={z.string().transform((val) => Number(val))}
+                        >
+                          {({ value, setValue, onBlur }) => (
+                            <CreatableSelect
+                              size="sm"
+                              radius="md"
+                              value={value}
+                              label="Khách hàng"
+                              data={partnerOptions}
+                              onChange={(value) => {
+                                setValue(value || '');
+                              }}
+                              onBlur={onBlur}
+                              searchable
+                              creatable
+                              onSearchChange={onSearchPartner}
+                              isLoadingOptions={partnerSelectLoading}
+                              rightSection={<ComboboxChevron />}
+                              rightSectionPointerEvents="none"
+                            />
+                          )}
+                        </Field>
+                        <Field name="categoryId" initialValue={''}>
+                          {({ value, setValue, onBlur }) => (
+                            <CreatableSelect
+                              size="sm"
+                              radius="md"
+                              value={value}
+                              label="Loại hàng hoá"
+                              data={catOptions}
+                              onChange={(value) => {
+                                setValue(value || '');
+                              }}
+                              onBlur={onBlur}
+                              searchable
+                              creatable
+                              onSearchChange={onSearchCat}
+                              isLoadingOptions={catSelectLoading}
+                              rightSection={<ComboboxChevron />}
+                              rightSectionPointerEvents="none"
+                            />
+                          )}
+                        </Field>
+                        <Field name="itemCode" initialValue={''}>
+                          {({ value, setValue, onBlur }) => (
+                            <TextInput
+                              radius="md"
+                              label="Mã hàng hoá"
+                              size="sm"
+                              value={value}
+                              onChange={(e) => setValue(e.target.value)}
+                              onBlur={onBlur}
+                            />
+                          )}
+                        </Field>
                       </SimpleGrid>
                       <Stack gap={2}>
                         <Text fw="500" size="sm">
                           Hình ảnh (tối đa 3 ảnh)
                         </Text>
                         <Group>
-                          <Dropzone onDrop={() => {}} accept={IMAGE_MIME_TYPE} h={150} w={150}>
+                          <Dropzone
+                            onDrop={() => {}}
+                            accept={IMAGE_MIME_TYPE}
+                            h={150}
+                            w={150}
+                            radius="md"
+                          >
                             <Text ta="center">Drop images here</Text>
                           </Dropzone>
                           <Image
@@ -254,8 +365,31 @@ export const PackageAndLabelForm = () => {
                         spacing={{ base: 10, sm: 'xl' }}
                         verticalSpacing="md"
                       >
-                        <TextInput label="Mã hàng hoá" />
-                        <TextInput label="Mã hàng hoá" />
+                        <Field name="specs.dimension">
+                          {({ value, setValue, onBlur }) => (
+                            <TextInput
+                              label="Kt  (rộng x cao)"
+                              value={value}
+                              onChange={(e) => setValue(e.target.value)}
+                              onBlur={onBlur}
+                              size="sm"
+                              radius="md"
+                            />
+                          )}
+                        </Field>
+
+                        <Field name="specs.seamingDimension" initialValue={''}>
+                          {({ value, setValue, onBlur }) => (
+                            <TextInput
+                              label="Kt dán (rộng x cao)"
+                              value={value}
+                              onChange={(e) => setValue(e.target.value)}
+                              onBlur={onBlur}
+                              size="sm"
+                              radius="md"
+                            />
+                          )}
+                        </Field>
                       </SimpleGrid>
                       <SimpleGrid
                         cols={{ base: 1, md: 2 }}
@@ -304,4 +438,4 @@ export const PackageAndLabelForm = () => {
       )}
     </Form>
   );
-};
+});

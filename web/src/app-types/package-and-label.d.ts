@@ -1,4 +1,4 @@
-export type PackageAndLabel = {
+export type TPackageAndLabel = {
   id: number;
   name: string;
   uomId: number;
@@ -14,7 +14,7 @@ export type PackageAndLabel = {
   };
 };
 
-export type NewPackageAndLabel = {
+export type TPackageAndLabelMutation = {
   name: string;
   uomId: number;
   partnerId: number;

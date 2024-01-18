@@ -53,7 +53,7 @@ export const packagesAndLabelsQueryOptions = (deps: string | object) =>
     placeholderData: keepPreviousData,
   });
 
-export const packageAndLabelQueryOptions = (id: string) =>
+export const TPackageAndLabelQueryOptions = (id: string) =>
   queryOptions({
     queryKey: ['packages-and-labels', id],
     queryFn: () => getPackageAndLabelById(id),

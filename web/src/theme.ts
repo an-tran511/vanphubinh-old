@@ -15,6 +15,6 @@ export const theme = createTheme({
       '#2b3882',
     ],
   },
-
+  primaryColor: 'blue',
   primaryShade: 9,
 });
