@@ -7,12 +7,18 @@ import {
   Title,
   Pagination,
   Text,
-  Breadcrumbs,
   Anchor,
+  em,
+  TextInput,
+  ActionIcon,
+  SimpleGrid,
+  Divider,
 } from '@mantine/core';
-import { CaretRight, House } from '@phosphor-icons/react';
+import { useMediaQuery } from '@mantine/hooks';
+import { House, MagnifyingGlass, Plus } from '@phosphor-icons/react';
 import { useNavigate } from '@tanstack/react-router';
 import { ReactNode } from 'react';
+import { lighten } from '@mantine/core';
 
 interface ListProps {
   children: ReactNode;
@@ -32,6 +38,7 @@ export const List = (props: ListProps) => {
   const { page, onPageChange, lastPage, isLoading, total } = pagination ?? {};
   const navigate = useNavigate();
   const defaultHandleClick = () => navigate({ to: `create` });
+  const isMobile = useMediaQuery(`(max-width: ${em(750)})`);
 
   const createHandler =
     typeof onCreateHandler === 'function' ? onCreateHandler : defaultHandleClick;
@@ -49,26 +56,62 @@ export const List = (props: ListProps) => {
   return (
     <Stack h={{ base: 'calc(100vh - 60px)', md: '100vh' }} gap="0">
       <Box
-        px="lg"
-        py="lg"
-        bg="white"
+        p="md"
         style={{
-          borderBottom: '1px solid #e0e0e0',
+          borderBottom: '1px solid var(--mantine-color-gray-3)',
         }}
       >
-        <Group justify="space-between" mt="0">
-          <Title order={2}>{title}</Title>
-          <Button variant="filled" justify="space-between" onClick={createHandler}>
-            Thêm {title.toLowerCase()}
-          </Button>
+        <Group justify="space-between">
+          <Group>
+            <Title order={isMobile ? 4 : 2}>{title}</Title>
+          </Group>
+          {/* <TextInput
+            visibleFrom="md"
+            variant="default"
+            leftSection={<MagnifyingGlass size={14} weight="bold" />}
+            placeholder="Tìm kiếm..."
+
+            // placeholder="Tìm kiếm"
+            // value={searchValueDraft}
+            // onChange={(event) => setSearchValueDraft(event.currentTarget.value)}
+          /> */}
+          <Group justify="flex-end" gap="xs">
+            {isMobile ? (
+              <ActionIcon size="md" aria-label="Settings" onClick={createHandler}>
+                <Plus size={14} weight="bold" />
+              </ActionIcon>
+            ) : (
+              <Button
+                size={isMobile ? 'xs' : 'sm'}
+                variant="filled"
+                justify="space-between"
+                onClick={createHandler}
+                radius="md"
+              >
+                Thêm mới
+              </Button>
+            )}
+          </Group>
         </Group>
+        {/* <TextInput
+          mt="xs"
+          variant="default"
+          hiddenFrom="md"
+          leftSection={<MagnifyingGlass size={14} weight="bold" />}
+          size="xs"
+          placeholder="Tìm kiếm..."
+
+          // placeholder="Tìm kiếm"
+          // value={searchValueDraft}
+          // onChange={(event) => setSearchValueDraft(event.currentTarget.value)}
+        /> */}
       </Box>
-      <Card py="0" px="0" h="100%" mah="100%" bg="white">
+      <Card py="0" px="0" h="100%" mah="100%">
         {children}
       </Card>
       {page && onPageChange && lastPage && (
-        <Box bg="white" px={{ base: 'md', md: 'lg' }}>
-          <Group justify="space-between" py={{ base: 'xs', md: 'sm' }}>
+        <Box px={{ base: 'md', md: 'lg' }}>
+          <Group justify="space-between" py="xs" visibleFrom="md">
             <Text size="sm" c="dimmed">
               Hiện{' '}
               <b>
@@ -83,7 +126,31 @@ export const List = (props: ListProps) => {
               onChange={onPageChange}
               total={lastPage}
               withEdges
+              radius="xl"
             />
+          </Group>
+          <Group justify="space-between" py={{ base: 'xs', md: 'sm' }} hiddenFrom="md">
+            <Text c="dimmed" size="xs">
+              <b>
+                {(page - 1) * 30 + 1} - {page === lastPage ? total : page * 30}
+              </b>{' '}
+              / <b>{total}</b>
+            </Text>
+            <Pagination.Root
+              total={lastPage}
+              disabled={isLoading}
+              size="xs"
+              onChange={onPageChange}
+              radius="xl"
+            >
+              <Group gap={7} justify="center">
+                <Pagination.Previous />
+                <Text size="xs">
+                  {page} / {lastPage}
+                </Text>
+                <Pagination.Next />
+              </Group>
+            </Pagination.Root>
           </Group>
         </Box>
       )}

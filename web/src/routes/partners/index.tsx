@@ -3,14 +3,15 @@ import { FileRoute, useNavigate } from '@tanstack/react-router';
 import { DataTable } from 'mantine-datatable';
 import { List } from '@components/crud/list';
 import { useDebouncedValue, useDisclosure } from '@mantine/hooks';
-import { Badge, Box, Drawer, Group, TextInput } from '@mantine/core';
+import { Badge, Box, Drawer, Group, TextInput, ActionIcon } from '@mantine/core';
 import { PartnerCreate } from './-components/create';
 import { type Partner } from '@/app-types/partner';
 import { z } from 'zod';
-import classes from '@/components/table/Table.module.css';
+import classes from '@components/table/Table.module.css';
 import { useEffect, useState } from 'react';
 import { partnersQueryOptions } from '@apis/query-options';
-import { ListResponse } from '@/app-types/response';
+import { ListResponse } from '@app-types/response';
+import { List as ListIcon, SquaresFour } from '@phosphor-icons/react';
 
 const partnerSearchSchema = z.object({
   page: z.number().catch(1),
@@ -122,16 +123,24 @@ function DashboardComponent() {
 
   return (
     <List title="Đối tác" onCreateHandler={open} pagination={pagination}>
-      <Box px={{ base: 'md', md: 'lg' }} py="md" bg="white">
-        <Group>
+      {/* <Box px={{ base: 'md', md: 'lg' }} py="md" bg="white">
+        <Group justify="space-between">
           <TextInput
             variant="default"
             placeholder="Tìm kiếm"
             value={searchValueDraft}
             onChange={(event) => setSearchValueDraft(event.currentTarget.value)}
           />
+          <Group gap="xs">
+            <ActionIcon aria-label="Settings" variant="light" size="lg">
+              <ListIcon size={16} />
+            </ActionIcon>
+            <ActionIcon aria-label="Settings" variant="light" size="lg" color="gray">
+              <SquaresFour size={16} />
+            </ActionIcon>
+          </Group>
         </Group>
-      </Box>
+      </Box> */}
       <DataTable
         withTableBorder
         minHeight={180}

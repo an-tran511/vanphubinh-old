@@ -33,6 +33,7 @@ export function PartnerCreate(props: PartnerCreateProps) {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 onBlur={onBlur}
+                radius="md"
               />
             )}
           </Field>
@@ -65,6 +66,7 @@ export function PartnerCreate(props: PartnerCreateProps) {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 onBlur={onBlur}
+                radius="md"
               />
             )}
           </Field>
@@ -75,6 +77,7 @@ export function PartnerCreate(props: PartnerCreateProps) {
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 onBlur={onBlur}
+                radius="md"
               />
             )}
           </Field>
@@ -82,6 +85,7 @@ export function PartnerCreate(props: PartnerCreateProps) {
             {({ value, setValue, onBlur }) => (
               <TextInput
                 label="Địa chỉ"
+                radius="md"
                 value={value}
                 onChange={(e) => setValue(e.target.value)}
                 onBlur={onBlur}
@@ -89,7 +93,9 @@ export function PartnerCreate(props: PartnerCreateProps) {
             )}
           </Field>
 
-          <Button onClick={submit}>Submit</Button>
+          <Button onClick={submit} radius="md">
+            Submit
+          </Button>
         </Stack>
       )}
     </Form>

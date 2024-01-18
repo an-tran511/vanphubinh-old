@@ -1,9 +1,12 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@adonisjs/lucid/orm'
+import { column } from '@adonisjs/lucid/orm'
 import { search } from '../utils/search.js'
+import AppBaseModel from '#models/app_base_model'
 
-export default class Item extends BaseModel {
-  public static search = search(this, ['name'])
+export default class Item extends AppBaseModel {
+  public static search = search(this, ['name'], {
+    name: (s: string) => s.normalize('NFD').replace(/[\u0300-\u036f]/g, ''),
+  })
 
   @column({ isPrimary: true })
   declare id: number
@@ -13,6 +16,12 @@ export default class Item extends BaseModel {
 
   @column()
   declare uomId: number
+
+  @column()
+  declare secondaryUomId: number
+
+  @column()
+  declare purchaseUomId: number
 
   @column()
   declare partnerId: number
@@ -28,6 +37,9 @@ export default class Item extends BaseModel {
 
   @column()
   declare specs: object
+
+  @column()
+  declare isStockable: boolean
 
   @column.dateTime({ autoCreate: true })
   declare createdAt: DateTime

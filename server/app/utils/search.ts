@@ -100,7 +100,7 @@ const queryNestedRelations = <Model extends LucidModel>(
 export const search = <
   Model extends LucidModel,
   Columns extends (RelationPath<InstanceType<Model>> | string)[],
-  Computed extends Partial<Record<Columns[number], (search: unknown) => unknown>>,
+  Computed extends Partial<Record<Columns[number], (search: any) => any>>,
 >(
   modelOrDefaultColumns1: Columns | Model,
   modelOrDefaultColumns2?: Model | Columns,
@@ -124,6 +124,7 @@ export const search = <
         for (const index in allColumns) {
           const column = allColumns[index]
           const computedColumn = computed?.[column] ?? defaultComputed?.[column]
+
           const computedSearch = computedColumn ? computedColumn(searchText) : searchText
           const spliTText = options?.spliTText ?? '.'
           const sections = column.split(spliTText)
@@ -139,9 +140,10 @@ export const search = <
             query.model,
             sections,
             (subQ, relatedTable) =>
-              subQ.orWhereRaw(`CAST(${relatedTable}.${searchedColumn} AS TEXT) ILIKE ?`, [
-                `%${computedSearch}%`,
-              ]),
+              subQ.orWhereRaw(
+                `(CAST(unaccent(${relatedTable}.${searchedColumn}) AS TEXT)) ILIKE ?`,
+                [`%${computedSearch}%`]
+              ),
             (q) => q.orWhereIn
           )
         }

@@ -1,27 +1,30 @@
 import Partner from '#models/partner'
+import { createPartnerValidator } from '#validators/partner'
+import { inject } from '@adonisjs/core'
 import type { HttpContext } from '@adonisjs/core/http'
+import { PartnerService } from '#services/partner_service'
 
+@inject()
 export default class PartnersController {
-  public async index({ request }: HttpContext) {
+  constructor(protected partnerService: PartnerService) {}
+
+  public async index({ request, response }: HttpContext) {
     const { page = 1, perPage = 30, searchValue = '' } = request.qs()
-    const items = await Partner.query()
-      .withScopes((scopes) => scopes.search(searchValue))
-      .paginate(page, perPage)
-    return items
+    const partners = await this.partnerService
+      .all({ searchValue, page, perPage })
+      .catch((error: any) => {
+        return response.internalServerError(error)
+      })
+
+    return response.ok(partners)
   }
 
-  // public async store({ request, response }: HttpContext) {
-  //   const newPartnerSchema = schema.create({
-  //     name: schema.string(),
-  //     email: schema.string.optional(),
-  //     address: schema.string.optional(),
-  //     isCustomer: schema.boolean(),
-  //     isSupplier: schema.boolean(),
-  //   })
-  //   const payload = await request.qs({
-  //     schema: newPartnerSchema,
-  //   })
-  //   const partner = await Partner.create(payload)
-  //   return response.ok(partner)
-  // }
+  public async store({ request, response }: HttpContext) {
+    const data = request.all()
+    const payload = await createPartnerValidator.validate(data)
+    const partner = await Partner.create(payload).catch((error) => {
+      return response.internalServerError(error)
+    })
+    return response.created(partner)
+  }
 }

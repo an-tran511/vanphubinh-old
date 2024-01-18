@@ -2,7 +2,7 @@ import { keepPreviousData, queryOptions } from '@tanstack/react-query';
 import { getPartners } from './partner';
 import { getUoms } from './uom';
 import { getCategories } from './category';
-import { getPackagesAndLabels } from './package-and-label';
+import { getPackagesAndLabels, getPackageAndLabelById } from './package-and-label';
 
 export const partnersQueryOptions = ({
   deps,
@@ -46,9 +46,16 @@ export const categoriesQueryOptions = ({
     select: (data) => (noMeta ? data.data : data),
   });
 
-export const packagesQueryOptions = (deps: string | object) =>
+export const packagesAndLabelsQueryOptions = (deps: string | object) =>
   queryOptions({
     queryKey: ['packages-and-labels', deps],
     queryFn: () => getPackagesAndLabels(deps),
+    placeholderData: keepPreviousData,
+  });
+
+export const packageAndLabelQueryOptions = (id: string) =>
+  queryOptions({
+    queryKey: ['packages-and-labels', id],
+    queryFn: () => getPackageAndLabelById(id),
     placeholderData: keepPreviousData,
   });

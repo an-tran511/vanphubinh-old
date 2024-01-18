@@ -13,6 +13,7 @@ export default class extends BaseSchema {
       table.integer('purchase_uom_id').unsigned().references('uoms.id').nullable()
       table.integer('partner_id').unsigned().references('partners.id').nullable()
       table.string('item_code').nullable()
+      table.boolean('is_stockable').defaultTo(true)
       table.string('note').nullable()
       table.jsonb('specs').nullable()
       table.timestamp('created_at', { useTz: true })

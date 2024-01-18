@@ -1,5 +1,5 @@
-import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
-import Uom from 'App/Models/Uom'
+import Uom from '#models/uom'
+import { BaseSeeder } from '@adonisjs/lucid/seeders'
 
 export default class extends BaseSeeder {
   public static environment = ['development', 'testing']

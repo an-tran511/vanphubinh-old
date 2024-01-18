@@ -1,5 +1,5 @@
 import { BaseSeeder } from '@adonisjs/lucid/seeders'
-import { Application } from '@adonisjs/core/app'
+import app from '@adonisjs/core/services/app'
 
 export default class IndexSeeder extends BaseSeeder {
   private async runSeeder(Seeder: { default: typeof BaseSeeder }) {
@@ -7,9 +7,9 @@ export default class IndexSeeder extends BaseSeeder {
      * Do not run when not in a environment specified in Seeder
      */
     if (
-      (!Seeder.default.environment.includes('development') && Application.inDev) ||
-      (!Seeder.default.environment.includes('testing') && Application.inTest) ||
-      (!Seeder.default.environment.includes('production') && Application.inProduction)
+      (!Seeder.default.environment.includes('development') && app.inDev) ||
+      (!Seeder.default.environment.includes('testing') && app.inTest) ||
+      (!Seeder.default.environment.includes('production') && app.inProduction)
     ) {
       return
     }

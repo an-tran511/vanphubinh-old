@@ -1,5 +1,6 @@
 import '@mantine/core/styles.layer.css';
 import 'mantine-datatable/styles.layer.css';
+import '@mantine/dropzone/styles.css';
 import { Loader, MantineProvider, Center } from '@mantine/core';
 import { theme } from './theme';
 import { QueryClientProvider, QueryClient, QueryCache, MutationCache } from '@tanstack/react-query';

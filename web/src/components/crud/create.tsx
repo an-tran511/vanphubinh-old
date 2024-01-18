@@ -10,7 +10,7 @@ interface CreateProps {
 export const Create = (props: CreateProps) => {
   const { children, title, submitHandler } = props;
   return (
-    <Stack h={{ base: 'calc(100vh - 60px)', md: '100vh' }} gap="0">
+    <Stack h={{ base: 'calc(100vh - 60px)', md: '100vh' }} gap="0" bg="#F9FAFB">
       <Box
         px="md"
         py="md"
@@ -20,7 +20,7 @@ export const Create = (props: CreateProps) => {
         }}
       >
         <Group justify="space-between" mt="0">
-          <Title order={2}>{title}</Title>
+          <Title order={3}>{title}</Title>
           <Button onClick={submitHandler}>Tạo</Button>
         </Group>
       </Box>

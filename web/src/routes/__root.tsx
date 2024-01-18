@@ -18,6 +18,8 @@ function RootComponent() {
       header={{ height: 60, collapsed: !isMobile }}
       navbar={{ width: 250, breakpoint: 'md', collapsed: { mobile: !opened } }}
       padding="0"
+      transitionDuration={500}
+      transitionTimingFunction="ease"
     >
       <AppShell.Header>
         <Group h="100%" px={{ base: 'md', md: 'lg' }}>

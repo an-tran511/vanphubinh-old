@@ -7,7 +7,7 @@ import { ActionIcon, Box, Group, TextInput } from '@mantine/core';
 import { z } from 'zod';
 import classes from '@/components/table/Table.module.css';
 import { useState } from 'react';
-import { packagesQueryOptions } from '@/apis/query-options';
+import { packagesAndLabelsQueryOptions } from '@apis/query-options';
 import { Eye, Trash } from '@phosphor-icons/react';
 
 const packageSearchSchema = z.object({
@@ -27,8 +27,10 @@ export const Route = new FileRoute('/packages-and-labels/').createRoute({
       searchValue: search.searchValue ?? '',
     }),
   ],
-  loader: ({ context: { queryClient }, deps }) =>
-    queryClient.ensureQueryData(packagesQueryOptions(deps)),
+  loaderDeps: ({ search: { page, searchValue } }) => ({ page, searchValue }),
+  loader: ({ context: { queryClient }, deps }) => {
+    queryClient.ensureQueryData(packagesAndLabelsQueryOptions(deps));
+  },
 });
 
 function ListComponent() {
@@ -63,7 +65,7 @@ function ListComponent() {
   // }, [page]);
 
   const packagesQuery = useSuspenseQuery(
-    packagesQueryOptions({ page, searchValue: debouncedSearchValueDraft })
+    packagesAndLabelsQueryOptions({ page, searchValue: debouncedSearchValueDraft })
   );
   const packages = packagesQuery.data.data;
   const meta = packagesQuery.data.meta;
@@ -120,10 +122,21 @@ function ListComponent() {
   };
 
   return (
-    <List title="Sản phẩm bao bì" pagination={pagination}>
-      <Box px="lg" my="lg" bg="white">
+    <List title="Bao bì & nhãn mác" pagination={pagination}>
+      <Box p="md" bg="white">
         <Group>
           <TextInput
+            variant="default"
+            visibleFrom="md"
+            radius="md"
+            placeholder="Tìm kiếm"
+            value={searchValueDraft}
+            onChange={(event) => setSearchValueDraft(event.currentTarget.value)}
+          />
+          <TextInput
+            size="xs"
+            hiddenFrom="md"
+            radius="md"
             variant="default"
             placeholder="Tìm kiếm"
             value={searchValueDraft}

@@ -73,12 +73,13 @@ export const CreatableSelect = factory<SelectFactory>((_props, ref) => {
     disabled,
     description,
     isLoadingOptions,
+    radius,
     filter,
     onChange,
     onSearchChange,
     onCreate,
   } = props;
-  validateOptions(data);
+  validateOptions([...data]);
 
   const [_value, setValue] = useUncontrolled({
     value,
@@ -183,6 +184,7 @@ export const CreatableSelect = factory<SelectFactory>((_props, ref) => {
           multiline
           component="button"
           type="button"
+          radius={radius}
           pointer
           variant={variant}
           size={size}
@@ -197,9 +199,15 @@ export const CreatableSelect = factory<SelectFactory>((_props, ref) => {
         </InputBase>
       </Combobox.Target>
 
-      <Combobox.Dropdown style={{ boxShadow: 'var(--mantine-shadow-xl)' }}>
+      <Combobox.Dropdown
+        style={{
+          boxShadow:
+            'rgba(22, 23, 24, 0.35) 0px 10px 38px -10px, rgba(22, 23, 24, 0.2) 0px 10px 20px -15px',
+        }}
+      >
         {searchable ? (
           <Combobox.Search
+            radius={radius}
             variant="filled"
             value={search}
             onChange={(event) => {

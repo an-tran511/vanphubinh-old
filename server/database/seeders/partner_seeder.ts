@@ -1,6 +1,6 @@
-import BaseSeeder from '@ioc:Adonis/Lucid/Seeder'
+import { BaseSeeder } from '@adonisjs/lucid/seeders'
 import { faker } from '@faker-js/faker/locale/vi'
-import Partner from 'App/Models/Partner'
+import Partner from '#models/partner'
 
 export default class extends BaseSeeder {
   public static environment = ['development', 'testing']
