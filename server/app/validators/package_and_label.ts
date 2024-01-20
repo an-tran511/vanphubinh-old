@@ -8,13 +8,12 @@ export const createPackageAndLabelValidator = vine.compile(
     categoryId: vine.number().positive().optional(),
     itemCode: vine.string().trim().optional(),
     note: vine.string().trim().optional(),
-    specifications: vine
-      .object({
-        dimension: vine.string().trim().optional(),
-        seamingDimension: vine.string().trim().optional(),
-        thickness: vine.number().positive().optional(),
-        colorCount: vine.number().positive().optional(),
-      })
-      .optional(),
+    specs: vine.object({
+      dimension: vine.string().trim().optional(),
+      spreadDimension: vine.string().trim().optional(),
+      thickness: vine.number().positive().optional(),
+      numberOfColors: vine.number().positive().optional(),
+    }),
+    isStockable: vine.boolean().optional(),
   })
 )

@@ -2,15 +2,17 @@ export type TPackageAndLabel = {
   id: number;
   name: string;
   uomId: number;
+  secondaryUomId: number;
+  purchaseUomId: number;
   partnerId: number;
   categoryId: number;
   itemCode: string;
   note: string;
-  specifications: {
+  specs: {
     dimension: string;
-    seamingDimension: string;
+    spreadDimension: string;
     thickness: number;
-    colorCount: number;
+    numberOfColors: number;
   };
 };
 
@@ -21,10 +23,10 @@ export type TPackageAndLabelMutation = {
   categoryId: number;
   itemCode: string;
   note: string;
-  specifications: {
+  specs: {
     dimension: string;
-    seamingDimension: string;
+    spreadDimension: string;
     thickness: number;
-    colorCount: number;
+    numberOfColors: number;
   };
 };

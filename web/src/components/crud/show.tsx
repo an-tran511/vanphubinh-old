@@ -15,21 +15,21 @@ import {
   Badge,
 } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
-import { CaretDown, Note, Plus } from '@phosphor-icons/react';
-import { ReactNode, useState } from 'react';
+import { CaretDown, FloppyDisk, Note } from '@phosphor-icons/react';
+import { ReactNode } from 'react';
 import classes from './Crud.module.css';
 
 interface CreateProps {
   children: ReactNode;
   title: string;
+  isDirty?: boolean;
   submitHandler?: () => void;
 }
 
 export const Show = (props: CreateProps) => {
-  const { children, title, submitHandler } = props;
+  const { children, title, isDirty, submitHandler } = props;
   const isTablet = useMediaQuery(`(max-width: ${em(801)})`);
   const [opened, { open, close }] = useDisclosure(false);
-  const [formUpdateState, setFormUpdateState] = useState(false);
 
   return (
     <Stack h={{ base: 'calc(100vh - 60px)', md: '100vh' }} gap="0">
@@ -45,13 +45,18 @@ export const Show = (props: CreateProps) => {
         <Group justify="space-between">
           <Group>
             <Title order={isTablet ? 4 : 2}>{title}</Title>
+            {isDirty && (
+              <Badge color="gray" variant="light" radius="sm" size={isTablet ? 'xs' : 'sm'}>
+                Thay đổi chưa được lưu
+              </Badge>
+            )}
           </Group>
 
           <Group justify="flex-end" gap="xs">
             {isTablet ? (
               <Group gap="xs">
                 <ActionIcon size="md" aria-label="Save" onClick={submitHandler}>
-                  <Plus size={14} weight="bold" />
+                  <FloppyDisk size={14} weight="bold" />
                 </ActionIcon>
                 <ActionIcon
                   size="md"
@@ -72,7 +77,7 @@ export const Show = (props: CreateProps) => {
                   justify="space-between"
                   onClick={submitHandler}
                 >
-                  Thêm mới
+                  Lưu
                 </Button>
               </Group>
             )}

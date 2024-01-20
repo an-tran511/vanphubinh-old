@@ -1,4 +1,4 @@
-import { FormInstance } from 'houseform';
+import { Form, FormInstance } from 'houseform';
 import { Create } from '@components/crud/create';
 import { FileRoute, useNavigate } from '@tanstack/react-router';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -7,7 +7,6 @@ import { TPackageAndLabelMutation, TPackageAndLabel } from '@app-types/package-a
 import { createPackageAndLabel } from '@apis/package-and-label';
 import { toast } from 'sonner';
 import { PackageAndLabelForm } from './-components/package-and-label-form';
-import { redirect } from '@tanstack/react-router';
 
 export const Route = new FileRoute('/packages-and-labels/create').createRoute({
   component: CreateComponent,
@@ -35,8 +34,16 @@ export function CreateComponent() {
   };
 
   return (
-    <Create title="Thêm sản phẩm bao bì" submitHandler={doSubmit}>
-      <PackageAndLabelForm mutation={mutation} ref={formRef} />
-    </Create>
+    <Form onSubmit={(values: TPackageAndLabelMutation) => mutation.mutate(values)} ref={formRef}>
+      {() => (
+        <Create
+          title="Thêm sản phẩm bao bì"
+          submitHandler={doSubmit}
+          savingState={mutation.isPending}
+        >
+          <PackageAndLabelForm />
+        </Create>
+      )}
+    </Form>
   );
 }

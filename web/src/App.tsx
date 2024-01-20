@@ -20,9 +20,9 @@ const queryClient = new QueryClient({
       // 🎉 only show error toasts if we already have data in the cache
       // which indicates a failed background update
       if (query.state.data !== undefined) {
-        toast.error(`Something went wrong: ${error.message}`);
+        toast.error(`Lỗi: ${error.message}`);
       }
-      toast.error(`Something went wrong: ${error.message}`);
+      toast.error(`Lỗi: ${error.message}`);
     },
   }),
   mutationCache: new MutationCache({
@@ -30,7 +30,7 @@ const queryClient = new QueryClient({
       // 🎉 only show error toasts if we already have data in the cache
       // which indicates a failed background update
 
-      toast.error(`Something went wrong: ${error.message}`);
+      toast.error(`Lỗi: ${error.message}`);
     },
   }),
 });

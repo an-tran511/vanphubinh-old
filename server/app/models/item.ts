@@ -1,7 +1,9 @@
 import { DateTime } from 'luxon'
-import { column } from '@adonisjs/lucid/orm'
+import { belongsTo, column } from '@adonisjs/lucid/orm'
 import { search } from '../utils/search.js'
 import AppBaseModel from '#models/app_base_model'
+import Partner from './partner.js'
+import { type BelongsTo } from '@adonisjs/lucid/types/relations'
 
 export default class Item extends AppBaseModel {
   public static search = search(this, ['name'], {
@@ -25,6 +27,9 @@ export default class Item extends AppBaseModel {
 
   @column()
   declare partnerId: number
+
+  @belongsTo(() => Partner)
+  declare partner: BelongsTo<typeof Partner>
 
   @column()
   declare categoryId: number

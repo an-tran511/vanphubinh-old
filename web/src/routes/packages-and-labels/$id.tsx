@@ -3,7 +3,7 @@ import { TPackageAndLabelQueryOptions } from '@/apis/query-options';
 import { useMutation, useQueryClient, useSuspenseQuery } from '@tanstack/react-query';
 
 import { Show } from '@components/crud/show';
-import { FormInstance } from 'houseform';
+import { Form, FormInstance } from 'houseform';
 import { PackageAndLabelForm } from './-components/package-and-label-form';
 import { TPackageAndLabel, TPackageAndLabelMutation } from '@/app-types/package-and-label';
 import { toast } from 'sonner';
@@ -40,8 +40,12 @@ export function DetailComponent() {
     formRef?.current?.submit();
   };
   return (
-    <Show title="Bao bì & nhãn mác" submitHandler={doSubmit}>
-      <PackageAndLabelForm mutation={mutation} formRef={formRef} data={data} />
-    </Show>
+    <Form onSubmit={(values: TPackageAndLabelMutation) => mutation.mutate(values)}>
+      {({ isDirty }) => (
+        <Show title="Bao bì & nhãn mác" submitHandler={doSubmit} isDirty={isDirty}>
+          <PackageAndLabelForm data={data} />
+        </Show>
+      )}
+    </Form>
   );
 }

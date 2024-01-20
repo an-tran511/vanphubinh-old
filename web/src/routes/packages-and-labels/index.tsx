@@ -72,24 +72,32 @@ function ListComponent() {
   const isLoading = packagesQuery.isFetching || packagesQuery.isLoading;
   const columns = [
     {
-      accessor: 'id',
-      title: 'ID',
+      accessor: 'itemCode',
+      title: 'Mã hàng hoá',
     },
     {
       accessor: 'name',
       title: 'Tên sản phẩm',
     },
     {
-      accessor: 'phone',
-      title: 'Số điện thoại',
+      accessor: 'specs.dimension',
+      title: 'Kích thước',
     },
     {
-      accessor: 'email',
-      title: 'Email',
+      accessor: 'specs.dimension',
+      title: 'Kích thước trải',
     },
     {
-      accessor: 'address',
-      title: 'Địa chỉ',
+      accessor: 'specs.numberOFColors',
+      title: 'Độ dày',
+    },
+    {
+      accessor: 'specs.numberOFColors',
+      title: 'Số màu',
+    },
+    {
+      accessor: 'partner.name',
+      title: 'Khách hàng',
     },
     {
       accessor: '',

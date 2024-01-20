@@ -8,11 +8,6 @@ import {
   em,
   ActionIcon,
   Card,
-  Flex,
-  Tabs,
-  Avatar,
-  Textarea,
-  Container,
   Divider,
   Popover,
   ScrollArea,
@@ -20,23 +15,21 @@ import {
   Badge,
 } from '@mantine/core';
 import { useDisclosure, useMediaQuery } from '@mantine/hooks';
-import { CaretDown, FloppyDisk, Note, Plus } from '@phosphor-icons/react';
+import { CaretDown, Note, Plus } from '@phosphor-icons/react';
 import { ReactNode } from 'react';
 import classes from './Crud.module.css';
-import tabClasses from '../tab/Tab.module.css';
 
 interface CreateProps {
   children: ReactNode;
   title: string;
   submitHandler?: () => void;
-  formRef?: any;
+  savingState?: boolean;
 }
 
 export const Create = (props: CreateProps) => {
-  const { children, title, submitHandler, formRef } = props;
+  const { children, title, savingState, submitHandler } = props;
   const isTablet = useMediaQuery(`(max-width: ${em(801)})`);
   const [opened, { open, close }] = useDisclosure(false);
-  const isDirty = formRef?.current?.isDirty;
 
   return (
     <Stack h={{ base: 'calc(100vh - 60px)', md: '100vh' }} gap="0">
@@ -60,8 +53,13 @@ export const Create = (props: CreateProps) => {
           <Group justify="flex-end" gap="xs">
             {isTablet ? (
               <Group gap="xs">
-                <ActionIcon size="md" aria-label="Save" onClick={submitHandler}>
-                  <FloppyDisk size={14} weight="bold" />
+                <ActionIcon
+                  size="md"
+                  aria-label="Save"
+                  onClick={submitHandler}
+                  loading={savingState}
+                >
+                  <Plus size={14} weight="bold" />
                 </ActionIcon>
                 <ActionIcon
                   size="md"
@@ -81,8 +79,9 @@ export const Create = (props: CreateProps) => {
                   radius="md"
                   justify="space-between"
                   onClick={submitHandler}
+                  loading={savingState}
                 >
-                  Lưu
+                  Tạo
                 </Button>
               </Group>
             )}

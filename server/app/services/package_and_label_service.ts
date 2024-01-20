@@ -8,12 +8,14 @@ export class PackageAndLabelService {
     partnerId,
     uomId,
     categoryId,
+    specs,
   }: {
     name: string
     note: string | undefined
     partnerId: number | undefined
     uomId: number
     categoryId: number | undefined
+    specs: object | undefined
   }) {
     const packageAndLabel = await PackageAndLabel.create({
       name,
@@ -21,6 +23,7 @@ export class PackageAndLabelService {
       uomId,
       categoryId,
       partnerId,
+      specs,
     }).catch((error) => {
       return error
     })
